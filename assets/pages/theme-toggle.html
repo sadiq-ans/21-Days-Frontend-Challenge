@@ -1,11 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Basic setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Theme Toggle</title>
+
+    <!-- Google Font (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Boxicons for icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (optional global styles) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset + base styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s ease;
+            /* smooth theme transition */
+        }
+
+        /* Default (Light Theme) */
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f7fa;
+            color: #111;
+        }
+
+        /* Dark Theme (applied via JS class) */
+        body.dark {
+            background: var(--s-dark-color);
+            /* from external CSS */
+            color: #fff;
+        }
+
+        /* Center container */
+        .container {
+            text-align: center;
+        }
+
+        /* Toggle Button Design */
+        #toggleBtn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            background: #ffffff;
+
+            /* Neumorphism style shadow */
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1),
+                -8px -8px 20px rgba(255, 255, 255, 0.7);
+        }
+
+        /* Button style in dark mode */
+        body.dark #toggleBtn {
+            background: var(--s-primary-bg-color);
+            box-shadow: var(--s-shadow);
+        }
+
+        /* Hover interaction */
+        #toggleBtn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Icon styling */
+        #toggleBtn i {
+            font-size: 32px;
+            color: #333;
+        }
+
+        /* Icon color in dark mode */
+        body.dark #toggleBtn i {
+            color: #fff;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <!-- Main UI -->
+    <div class="container">
+        <button id="toggleBtn">
+            <!-- Default icon = Sun (light mode) -->
+            <i id="icon" class='bx bx-sun'></i>
+        </button>
+    </div>
+
+    <script>
+        // Select elements
+        const toggleBtn = document.getElementById("toggleBtn");
+        const icon = document.getElementById("icon");
+
+        // Get saved theme from localStorage
+        let savedTheme = localStorage.getItem("theme");
+
+        // Apply saved theme on page load
+        if (savedTheme === "dark") {
+            document.body.classList.add("dark");
+            icon.classList.replace("bx-sun", "bx-moon"); // update icon
+        }
+
+        // Toggle theme on button click
+        toggleBtn.addEventListener("click", () => {
+
+            // Switch theme class
+            document.body.classList.toggle("dark");
+
+            // Check current theme and update UI + storage
+            if (document.body.classList.contains("dark")) {
+                icon.classList.replace("bx-sun", "bx-moon");
+                localStorage.setItem("theme", "dark");
+            } else {
+                icon.classList.replace("bx-moon", "bx-sun");
+                localStorage.setItem("theme", "light");
+            }
+        });
+    </script>
+
 </body>
+
 </html>
