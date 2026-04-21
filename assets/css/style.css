@@ -1,0 +1,11 @@
+:root {
+    --s-primary-color: #6366f1;
+    --s-secondry-color: #a5b4fc;
+    --s-tertiary-color: #9ca3af;
+    --s-primary-bg-color: #1e293b;
+    --s-secondry-bg-color: #6366f133;
+    --s-dark-color: #0f172a;
+    --s-transition: 0.3s ease;
+    --s-border: 1px solid rgba(255, 255, 255, 0.05);
+    --s-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}

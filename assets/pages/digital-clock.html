@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Character encoding -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive design for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Digital Clock</title>
+
+    <!-- Google Font (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Boxicons (optional, not used currently) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (optional if you want separate file) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+
+            /* Center content vertically & horizontally */
+            padding: 40px 20px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Main clock container */
+        .clock-container {
+            width: 363px;
+            text-align: center;
+            padding: 30px 50px;
+            border-radius: 16px;
+
+            /* Glassmorphism effect */
+            background: #1e293b;
+            backdrop-filter: blur(10px);
+
+            /* Shadow + border */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+
+            /* Flex alignment */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Time styling */
+        #time {
+            font-size: 60px;
+            letter-spacing: 3px;
+        }
+
+        /* Date styling */
+        #date {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        /* Responsive design for small screens */
+        @media (max-width: 600px) {
+            .clock-container {
+                width: 300px;
+            }
+
+            #time {
+                font-size: 45px;
+            }
+
+            #date {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="clock-container">
+                <!-- Time display -->
+                <h1 id="time">00:00:00</h1>
+
+                <!-- Date display -->
+                <p id="date"></p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Function to update time and date
+        function updateClock() {
+            const now = new Date(); // Get current date & time
+
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+
+            // Add leading zero if value is less than 10
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            // Format time string (HH:MM:SS)
+            const timeString = `${hours}:${minutes}:${seconds}`;
+
+            // Update time in DOM
+            document.getElementById("time").textContent = timeString;
+
+            // Format date (e.g., Monday, April 21, 2026)
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            const dateString = now.toLocaleDateString(undefined, options);
+
+            // Update date in DOM
+            document.getElementById("date").textContent = dateString;
+        }
+
+        // Run function immediately when page loads
+        updateClock();
+
+        // Run function every 1 second (1000 ms)
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21 Day Challenge</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 20px;
+            transition: 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #6366f1;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+
+        .card a:hover {
+            color: #818cf8;
+        }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 12px;
+            background: rgba(99, 102, 241, 0.2);
+            padding: 4px 10px;
+            border-radius: 999px;
+            color: #a5b4fc;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">21 Days Frontend Challenge</div>
+
+        <div class="grid">
+
+            <!-- Generate 21 Cards -->
+
+            <!-- Card 1 -->
+            <div class="card">
+                <div class="badge">Day 1</div>
+                <h3>Digital Clock</h3>
+                <p>Create a real-time digital clock using JavaScript. The time should update every second without
+                    refreshing the page.</p>
+                <a href="./assets/pages/digital-clock.html">Go to link →</a>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card">
+                <div class="badge">Day 2</div>
+                <h3>Theme Toggle</h3>
+                <p>Build a dark/light mode toggle. Save user preference in localStorage so it persists after reload.</p>
+                <a href="./assets/pages/theme-toggle.html">Go to link →</a>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card">
+                <div class="badge">Day 3</div>
+                <h3>Responsive Navbar</h3>
+                <p>Create a responsive navbar with a hamburger menu for mobile devices. Clicking should toggle menu
+                    visibility.</p>
+                <a href="./assets/pages/responsive-navbar.html">Go to link →</a>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card">
+                <div class="badge">Day 4</div>
+                <h3>Image Slider</h3>
+                <p>Build an image slider with next/previous buttons and optional auto-slide feature.</p>
+                <a href="./assets/pages/image-slider.html">Go to link →</a>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="card">
+                <div class="badge">Day 5</div>
+                <h3>Form Validation</h3>
+                <p>Design a login/signup form with real-time validation and proper error messages.</p>
+                <a href="./assets/pages/form-validation.html">Go to link →</a>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="card">
+                <div class="badge">Day 6</div>
+                <h3>To-Do App (Basic)</h3>
+                <p>Create a basic to-do app where users can add and delete tasks dynamically.</p>
+                <a href="./assets/pages/todo-app-basic.html">Go to link →</a>
+            </div>
+
+            <!-- Card 7 -->
+            <div class="card">
+                <div class="badge">Day 7</div>
+                <h3>To-Do App (Advanced)</h3>
+                <p>Enhance the to-do app with edit, mark complete, and localStorage functionality.</p>
+                <a href="./assets/pages/todo-app-advanced.html">Go to link →</a>
+            </div>
+
+            <!-- Card 8 -->
+            <div class="card">
+                <div class="badge">Day 8</div>
+                <h3>Notes App</h3>
+                <p>Build a notes app where users can create and save notes using localStorage.</p>
+                <a href="./assets/pages/note-app.html">Go to link →</a>
+            </div>
+
+            <!-- Card 9 -->
+            <div class="card">
+                <div class="badge">Day 9</div>
+                <h3>Weather App</h3>
+                <p>Create a weather app using an API to fetch and display real-time weather data</p>
+                <a href="./assets/pages/weather-app.html">Go to link →</a>
+            </div>
+
+            <!-- Card 10 -->
+            <div class="card">
+                <div class="badge">Day 10</div>
+                <h3>Product Filter UI</h3>
+                <p>Display a list of products and implement filtering based on category or search input.</p>
+                <a href="./assets/pages/product-filter-app.html">Go to link →</a>
+            </div>
+
+            <!-- Card 11 -->
+            <div class="card">
+                <div class="badge">Day 11</div>
+                <h3>Quiz App</h3>
+                <p>Build a quiz app with multiple questions, score tracking, and timer functionality.</p>
+                <a href="./assets/pages/quiz-app.html">Go to link →</a>
+            </div>
+
+            <!-- Card 12 -->
+            <div class="card">
+                <div class="badge">Day 12</div>
+                <h3>Password Generator</h3>
+                <p>Create a password generator with options like length, symbols, numbers, etc.</p>
+                <a href="./assets/pages/password-generator.html">Go to link →</a>
+            </div>
+
+            <!-- Card 13 -->
+            <div class="card">
+                <div class="badge">Day 13</div>
+                <h3>Search with Debounce</h3>
+                <p>Implement a search input that delays API/function calls using debouncing.</p>
+                <a href="./assets/pages/search-debounce.html">Go to link →</a>
+            </div>
+
+            <!-- Card 14 -->
+            <div class="card">
+                <div class="badge">Day 14</div>
+                <h3>Modal / Popup System</h3>
+                <p>Build a reusable modal component that can open and close with buttons.</p>
+                <a href="./assets/pages/popup.html">Go to link →</a>
+            </div>
+
+            <!-- Card 15 -->
+            <div class="card">
+                <div class="badge">Day 15</div>
+                <h3>E-commerce Product Page</h3>
+                <p>Create a product listing page with UI and add-to-cart functionality.</p>
+                <a href="./assets/pages/ecommerce-product.html">Go to link →</a>
+            </div>
+
+            <!-- Card 16 -->
+            <div class="card">
+                <div class="badge">Day 16</div>
+                <h3>Cart System</h3>
+                <p>Implement a cart system with quantity management and total price calculation.</p>
+                <a href="./assets/pages/cart-system.html">Go to link →</a>
+            </div>
+
+            <!-- Card 17 -->
+            <div class="card">
+                <div class="badge">Day 17</div>
+                <h3>Login/Signup UI</h3>
+                <p>Build authentication UI with validation and store user data in localStorage.</p>
+                <a href="./assets/pages/login-signup.html">Go to link →</a>
+            </div>
+
+            <!-- Card 18 -->
+            <div class="card">
+                <div class="badge">Day 18</div>
+                <h3>Dashboard UI</h3>
+                <p>Design a dashboard layout with sidebar, cards, and basic data display.</p>
+                <a href="./assets/pages/dashboard.html">Go to link →</a>
+            </div>
+
+            <!-- Card 19 -->
+            <div class="card">
+                <div class="badge">Day 19</div>
+                <h3>Blog UI</h3>
+                <p>Create a blog page where posts are rendered dynamically from data.</p>
+                <a href="./assets/pages/blog.html">Go to link →</a>
+            </div>
+
+            <!-- Card 20 -->
+            <div class="card">
+                <div class="badge">Day 20</div>
+                <h3>Final Project</h3>
+                <p>Choose and build a complete project like Netflix clone, portfolio, or dashboard.</p>
+                <a href="./assets/pages/final-project.html">Go to link →</a>
+            </div>
+
+            <!-- Card 21 -->
+            <div class="card">
+                <div class="badge">Day 21</div>
+                <h3>Deployment</h3>
+                <p>Deploy your project using Netlify or Vercel and share on LinkedIn and GitHub.</p>
+                <a href="./assets/pages/deployement.html">Go to link →</a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
