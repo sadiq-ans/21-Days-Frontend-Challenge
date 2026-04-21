@@ -5,7 +5,7 @@
     <!-- Character encoding -->
     <meta charset="UTF-8">
 
-    <!-- Responsive design for mobile -->
+    <!-- Responsive design for mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Digital Clock</title>
@@ -13,10 +13,10 @@
     <!-- Google Font (Inter) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Boxicons (optional, not used currently) -->
+    <!-- Boxicons (currently unused, can remove if not needed) -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-    <!-- External CSS (optional if you want separate file) -->
+    <!-- External CSS (optional) -->
     <link rel="stylesheet" href="../css/style.css">
 
     <style>
@@ -52,11 +52,11 @@
             background: #1e293b;
             backdrop-filter: blur(10px);
 
-            /* Shadow + border */
+            /* Shadow + subtle border */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.05);
 
-            /* Flex alignment */
+            /* Flex layout for alignment */
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -77,7 +77,19 @@
             opacity: 0.8;
         }
 
-        /* Responsive design for small screens */
+        /* Toggle button styling */
+        #toggleFormat {
+            margin-top: 15px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background: #334155;
+            color: #e5e7eb;
+            font-size: 14px;
+        }
+
+        /* Responsive design for smaller screens */
         @media (max-width: 600px) {
             .clock-container {
                 width: 300px;
@@ -98,36 +110,64 @@
     <section>
         <div class="container">
             <div class="clock-container">
+
                 <!-- Time display -->
                 <h1 id="time">00:00:00</h1>
 
                 <!-- Date display -->
                 <p id="date"></p>
+
+                <!-- Button to toggle 12H / 24H format -->
+                <button id="toggleFormat">Switch to 12H</button>
             </div>
         </div>
     </section>
 
     <script>
+        // Track current time format (true = 24-hour, false = 12-hour)
+        let is24Hour = true;
+
+        // Select toggle button
+        const toggleBtn = document.getElementById("toggleFormat");
+
+        // Toggle format on button click
+        toggleBtn.addEventListener("click", () => {
+            is24Hour = !is24Hour;
+
+            // Update button text based on mode
+            toggleBtn.textContent = is24Hour ? "Switch to 12H" : "Switch to 24H";
+
+            updateClock(); // Refresh immediately after toggle
+        });
+
         // Function to update time and date
         function updateClock() {
-            const now = new Date(); // Get current date & time
+            const now = new Date();
 
+            // Get current time values
             let hours = now.getHours();
             let minutes = now.getMinutes();
             let seconds = now.getSeconds();
+            let ampm = "";
 
-            // Add leading zero if value is less than 10
+            // Convert to 12-hour format if needed
+            if (!is24Hour) {
+                ampm = hours >= 12 ? " PM" : " AM";
+                hours = hours % 12 || 12; // Convert 0 → 12
+            }
+
+            // Add leading zero if needed
             hours = hours < 10 ? "0" + hours : hours;
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            // Format time string (HH:MM:SS)
-            const timeString = `${hours}:${minutes}:${seconds}`;
+            // Format time string
+            const timeString = `${hours}:${minutes}:${seconds}${ampm}`;
 
-            // Update time in DOM
+            // Update DOM
             document.getElementById("time").textContent = timeString;
 
-            // Format date (e.g., Monday, April 21, 2026)
+            // Date formatting options
             const options = {
                 weekday: 'long',
                 year: 'numeric',
@@ -135,16 +175,17 @@
                 day: 'numeric'
             };
 
+            // Format date string based on locale
             const dateString = now.toLocaleDateString(undefined, options);
 
-            // Update date in DOM
+            // Update DOM
             document.getElementById("date").textContent = dateString;
         }
 
-        // Run function immediately when page loads
+        // Initial call
         updateClock();
 
-        // Run function every 1 second (1000 ms)
+        // Update every second
         setInterval(updateClock, 1000);
     </script>
 </body>
