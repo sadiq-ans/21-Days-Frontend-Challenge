@@ -1,11 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
+    <!-- Ensures proper responsive behavior -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Responsive Navbar</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons (optional, currently not used) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (make sure variables are defined there) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset + Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--s-dark-color);
+            /* Requires variable */
+            color: #fff;
+        }
+
+        /* Header container */
+        header {
+            background: var(--s-secondry-bg-color);
+            /* Requires variable */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Navbar layout */
+        .navbar {
+            width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 500;
+        }
+
+        /* Navigation links */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            gap: 30px;
+            font-weight: 300;
+            font-size: 16px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        /* Active link */
+        a.active {
+            color: var(--s-primary-color);
+            /* Requires variable */
+        }
+
+        .nav-links a:hover {
+            color: var(--s-primary-color);
+        }
+
+        /* CTA Button */
+        .nav-links button {
+            outline: none;
+            border: none;
+            background-color: var(--s-primary-color);
+            border: 1px solid var(--s-primary-color);
+            font-size: 16px;
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: var(--s-transition);
+        }
+
+        .nav-links button:hover {
+            background-color: var(--s-dark-color);
+            border: 1px solid var(--s-primary-color);
+        }
+
+        /* Hamburger menu (hidden on desktop) */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            display: block;
+        }
+
+        .search-icon i {
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-icon i:hover {
+            color: var(--s-primary-color);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+
+            /* Hidden menu by default */
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                right: -100%;
+                /* Hidden off-screen */
+                flex-direction: column;
+                background: #1a1a1a;
+                width: 200px;
+                padding: 20px;
+                transition: 0.3s;
+            }
+
+            /* Show menu when active */
+            .nav-links.active {
+                right: 0;
+            }
+
+            /* Show hamburger on mobile */
+            .hamburger {
+                display: flex;
+            }
+
+            .search-icon {
+                display: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+    <header>
+        <nav class="navbar">
+
+            <!-- Logo -->
+            <div class="logo">LOGO</div>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Our Services</a></li>
+
+                <!-- Search Icon -->
+                <li class="search-icon">
+                    <i class='bx bx-search'></i>
+                </li>
+
+                <li>
+                    <button type="button">Contact Us</button>
+                </li>
+            </ul>
+
+            <!-- Hamburger Icon -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </nav>
+    </header>
+
+    <script>
+        // Select elements
+        const hamburger = document.getElementById("hamburger");
+        const navLinks = document.getElementById("navLinks");
+
+        // Toggle menu visibility on click
+        hamburger.addEventListener("click", () => {
+            navLinks.classList.toggle("active");
+        });
+    </script>
 </body>
+
 </html>
