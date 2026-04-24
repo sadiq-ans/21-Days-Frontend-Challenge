@@ -1,11 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Image Slider</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Boxicons for arrows -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset default spacing */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Center slider on screen */
+        body {
+            background: var(--s-dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Main wrapper */
+        .slider-wrapper {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        /* Slider container */
+        .slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Hide all images by default */
+        .slides img {
+            width: 100%;
+            display: none;
+            border-radius: 10px;
+        }
+
+        /* Show active image */
+        .slides img.active {
+            display: block;
+        }
+
+        /* Navigation buttons */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        button {
+            background: var(--s-primary-bg-color);
+            color: #fff;
+            border: none;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            font-size: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button i {
+            font-size: 24px;
+        }
+
+        /* Hover effect */
+        button:hover {
+            background: var(--s-secondry-bg-color);
+        }
+
+        /* Dots container */
+        .dots {
+            margin-top: 10px;
+        }
+
+        /* Each dot */
+        .dot {
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: var(--s-primary-bg-color);
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        /* Active dot */
+        .dot.active {
+            background-color: var(--s-primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            button {
+                padding: 8px 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div class="slider-wrapper">
+
+        <!-- Image Slider -->
+        <div class="slider">
+            <div class="slides">
+                <!-- Only first image is active initially -->
+                <img src="../images/image04.jpg" class="active">
+                <img src="../images/image03.jpg">
+                <img src="../images/image02.jpg">
+                <img src="../images/image01.jpg">
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="controls">
+            <button class="prev">
+                <i class='bx bx-chevron-left'></i>
+            </button>
+            <button class="next">
+                <i class='bx bx-chevron-right'></i>
+            </button>
+        </div>
+
+        <!-- Dots Indicator -->
+        <div class="dots"></div>
+
+    </div>
+
+    <script>
+        // Select elements
+        const slides = document.querySelectorAll(".slides img");
+        const nextBtn = document.querySelector(".next");
+        const prevBtn = document.querySelector(".prev");
+        const dotsContainer = document.querySelector(".dots");
+
+        // Track current slide index
+        let currentIndex = 0;
+
+        /* =========================
+           Create dots dynamically
+        ========================== */
+        slides.forEach((_, i) => {
+            const dot = document.createElement("span");
+            dot.classList.add("dot");
+
+            // Set first dot active
+            if (i === 0) dot.classList.add("active");
+
+            // Click event for dot navigation
+            dot.addEventListener("click", () => {
+                currentIndex = i;
+                updateSlider();
+            });
+
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll(".dot");
+
+        /* =========================
+           Update Slider UI
+        ========================== */
+        function updateSlider() {
+            // Remove active class from all
+            slides.forEach(slide => slide.classList.remove("active"));
+            dots.forEach(dot => dot.classList.remove("active"));
+
+            // Add active class to current
+            slides[currentIndex].classList.add("active");
+            dots[currentIndex].classList.add("active");
+        }
+
+        /* =========================
+           Next Button
+        ========================== */
+        nextBtn.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+        });
+
+        /* =========================
+           Previous Button
+        ========================== */
+        prevBtn.addEventListener("click", () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateSlider();
+        });
+
+        /* =========================
+           Auto Slide (every 3 sec)
+        ========================== */
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+        }, 3000);
+    </script>
+
 </body>
+
 </html>
