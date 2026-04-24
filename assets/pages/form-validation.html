@@ -1,11 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Form Validation</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons (optional, currently not used) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (make sure variables are defined there) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--s-dark-color);
+        }
+
+        .container {
+            padding: 25px;
+            border-radius: 10px;
+            width: 350px;
+            color: var(--s-tertiary-color);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 400;
+            font-size: 14px;
+            margin: 0 0 8px;
+        }
+
+        .form-group input {
+            padding: 6px 12px;
+            font-size: 16px;
+            font-weight: 400;
+            background: transparent !important;
+            border: 2px solid var(--s-secondry-bg-color);
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+            color: var(--s-tertiary-color);
+        }
+
+        .form-group input::placeholder {
+            color: var(--s-tertiary-color);
+            opacity: 0.3;
+        }
+
+        .form-group input:focus {
+            border-color: var(--s-primary-color);
+            background: transparent;
+
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background: var(--s-primary-color);
+            color: white;
+            border: 1px solid var(--s-primary-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--s-transition);
+        }
+
+        button:hover {
+            background: transparent;
+        }
+
+        .error {
+            color: var(--s-secondry-color);
+            font-size: 12px;
+            height: 14px;
+        }
+
+        .success input {
+            border-color: var(--s-primary-color);
+        }
+
+        .error-border input {
+            border-color: var(--s-tertiary-color);
+        }
+
+        #termsGroup label {
+            font-size: 14px !important;
+        }
+
+        input[type="checkbox"] {
+            accent-color: var(--s-primary-color);
+        }
+
+        #termsGroup input {
+            width: auto;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div class="container">
+        <form id="form">
+            <h2>Signup</h2>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" placeholder="Enter your name">
+                <small class="error"></small>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" id="email" placeholder="Enter your email">
+                <small class="error"></small>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <small class="error"></small>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm password">
+                <small class="error"></small>
+            </div>
+
+            <div class="form-group" id="termsGroup">
+                <label style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="terms">
+                    I accept Terms & Conditions
+                </label>
+                <small class="error"></small>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("form");
+        const nameInput = document.getElementById("name");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const terms = document.getElementById("terms");
+        const termsGroup = document.getElementById("termsGroup");
+
+        // Real-time validation (runs on typing)
+        [nameInput, email, password, confirmPassword].forEach(input => {
+            input.addEventListener("input", validateInputs);
+        });
+
+        // Single submit event (IMPORTANT: only one)
+        form.addEventListener("submit", function (e) {
+            e.preventDefault(); // stop page reload
+
+            const isValid = validateInputs(); // check validation
+
+            // Only show alert if form is valid
+            if (isValid) {
+                alert("Successfully submitted");
+
+                // Refresh page after alert
+                setTimeout(function () {
+                    location.reload();
+                }, 500);
+            }
+        });
+
+        function validateInputs() {
+            const nameValue = nameInput.value.trim();
+            const emailValue = email.value.trim();
+            const passwordValue = password.value.trim();
+            const confirmPasswordValue = confirmPassword.value.trim();
+
+            let isValid = true; // track overall form status
+
+            // Name
+            if (nameValue === "") {
+                setError(nameInput, "Name is required");
+                isValid = false;
+            } else {
+                setSuccess(nameInput);
+            }
+
+            // Email
+            if (emailValue === "") {
+                setError(email, "Email is required");
+                isValid = false;
+            } else if (!isValidEmail(emailValue)) {
+                setError(email, "Enter valid email");
+                isValid = false;
+            } else {
+                setSuccess(email);
+            }
+
+            // Password
+            if (passwordValue === "") {
+                setError(password, "Password is required");
+                isValid = false;
+            } else if (passwordValue.length < 6) {
+                setError(password, "Minimum 6 characters required");
+                isValid = false;
+            } else {
+                setSuccess(password);
+            }
+
+            // Confirm Password
+            if (confirmPasswordValue === "") {
+                setError(confirmPassword, "Confirm your password");
+                isValid = false;
+            } else if (confirmPasswordValue !== passwordValue) {
+                setError(confirmPassword, "Passwords do not match");
+                isValid = false;
+            } else {
+                setSuccess(confirmPassword);
+            }
+
+            // Terms & Conditions
+            const small = termsGroup.querySelector(".error");
+            if (!terms.checked) {
+                small.innerText = "You must accept terms";
+                termsGroup.classList.add("error-border");
+                termsGroup.classList.remove("success");
+                isValid = false;
+            } else {
+                small.innerText = "";
+                termsGroup.classList.add("success");
+                termsGroup.classList.remove("error-border");
+            }
+
+            return isValid; // return final validation result
+        }
+
+        // Show error message
+        function setError(input, message) {
+            const formGroup = input.parentElement;
+            const small = formGroup.querySelector(".error");
+
+            small.innerText = message;
+            formGroup.classList.add("error-border");
+            formGroup.classList.remove("success");
+        }
+
+        // Show success state
+        function setSuccess(input) {
+            const formGroup = input.parentElement;
+            const small = formGroup.querySelector(".error");
+
+            small.innerText = "";
+            formGroup.classList.add("success");
+            formGroup.classList.remove("error-border");
+        }
+
+        // Email validation using regex
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+    </script>
+
 </body>
+
 </html>
