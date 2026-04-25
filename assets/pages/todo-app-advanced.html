@@ -1,11 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>To-Do App - Advanced</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--s-dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            padding: 20px;
+            width: 380px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        /* Input Section */
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group input {
+            padding: 10px;
+            font-size: 16px;
+            background: transparent;
+            border: 2px solid var(--s-secondry-bg-color);
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+            color: white;
+            flex: 1;
+        }
+
+        .input-group input::placeholder {
+            color: var(--s-tertiary-color);
+        }
+
+        .input-group input:focus {
+            border-color: var(--s-primary-color);
+        }
+
+        button {
+            padding: 6px 12px;
+            outline: none;
+            border: none;
+        }
+
+        /* Task Lists */
+        ul {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: var(--s-primary-bg-color);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        /* Left section (checkbox + text) */
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Custom Checkbox */
+        input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background-color: var(--s-secondry-bg-color);
+            border: 2px solid var(--s-secondry-color);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: var(--s-primary-color);
+            border: none;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: "✔";
+            color: white;
+            font-size: 14px;
+            display: block;
+            text-align: center;
+        }
+
+        /* Add Button */
+        #addBtn {
+            background: var(--s-primary-color);
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #addBtn i {
+            font-size: 20px;
+        }
+
+        /* Completed Task Style */
+        .completed span {
+            text-decoration: line-through;
+            color: var(--s-tertiary-color);
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            background: transparent;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: var(--s-primary-color);
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div class="container">
+        <h1>To-Do App</h1>
+
+        <!-- Input Section -->
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="Enter your task...">
+            <button id="addBtn">
+                <i class="bx bx-plus"></i>
+            </button>
+        </div>
+
+        <!-- Pending Tasks -->
+        <h3>Pending</h3>
+        <ul id="taskList">
+            <li>
+                <div class="task-left">
+                    <input type="checkbox">
+                    <span>Learn New Skill</span>
+                </div>
+                <button class="delete-btn">
+                    <i class="bx bx-x"></i>
+                </button>
+            </li>
+        </ul>
+
+        <!-- Completed Tasks -->
+        <h3>Completed</h3>
+        <ul id="completedList">
+            <li class="completed">
+                <div class="task-left">
+                    <input type="checkbox" checked>
+                    <span>Go to gym</span>
+                </div>
+                <button class="delete-btn">
+                    <i class="bx bx-x"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        const taskInput = document.getElementById("taskInput");
+        const addBtn = document.getElementById("addBtn");
+        const taskList = document.getElementById("taskList");
+        const completedList = document.getElementById("completedList");
+
+        // Add task (button + Enter)
+        addBtn.addEventListener("click", addTask);
+        taskInput.addEventListener("keydown", e => {
+            if (e.key === "Enter") addTask();
+        });
+
+        function addTask() {
+            const text = taskInput.value.trim();
+            if (!text) return alert("Enter a task");
+
+            taskList.appendChild(createTask(text));
+            taskInput.value = "";
+        }
+
+        function createTask(text) {
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+            <div class="task-left">
+                <input type="checkbox">
+                <span>${text}</span>
+            </div>
+            <button class="delete-btn">
+                <i class="bx bx-x"></i>
+            </button>
+        `;
+
+            return li;
+        }
+
+        // Event delegation for both lists
+        document.addEventListener("click", e => {
+            const li = e.target.closest("li");
+            if (!li) return;
+
+            // Delete task
+            if (e.target.closest(".delete-btn")) {
+                li.remove();
+            }
+        });
+
+        document.addEventListener("change", e => {
+            if (e.target.type !== "checkbox") return;
+
+            const li = e.target.closest("li");
+
+            if (e.target.checked) {
+                li.classList.add("completed");
+                completedList.appendChild(li);
+            } else {
+                li.classList.remove("completed");
+                taskList.appendChild(li);
+            }
+        });
+    </script>
+
 </body>
+
 </html>
