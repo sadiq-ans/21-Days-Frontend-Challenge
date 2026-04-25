@@ -1,11 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
+    <!-- Makes layout responsive on all devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>To-Do App - Simple</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Boxicons for icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (if used) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Center app in the middle of screen */
+        body {
+            background: var(--s-dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        /* Main container */
+        .container {
+            padding: 20px;
+            width: 380px;
+            border-radius: 10px;
+        }
+
+        /* Heading */
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Input and button wrapper */
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Input field styling */
+        .input-group input {
+            padding: 10px;
+            font-size: 16px;
+            background: transparent;
+            border: 2px solid var(--s-secondry-bg-color);
+            border-radius: 5px;
+            outline: none;
+            color: white;
+            flex: 1;
+            transition: var(--s-transition);
+        }
+
+        /* Placeholder color */
+        .input-group input::placeholder {
+            color: var(--s-tertiary-color);
+        }
+
+        /* Input focus effect */
+        .input-group input:focus {
+            border-color: var(--s-primary-color);
+        }
+
+        /* Add button styling */
+        #addBtn {
+            background: var(--s-primary-color);
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            padding: 6px 12px;
+        }
+
+        /* Icon inside add button */
+        #addBtn i {
+            font-size: 20px;
+        }
+
+        /* Task list */
+        ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        /* Each task item */
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: var(--s-primary-bg-color);
+            border-radius: 5px;
+        }
+
+        /* Delete button */
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: var(--s-primary-color);
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div class="container">
+        <h1>To-Do App</h1>
+
+        <!-- Input field + Add button -->
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="Enter your task...">
+            <button id="addBtn">
+                <i class="bx bx-plus"></i>
+            </button>
+        </div>
+
+        <!-- Task list -->
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        // Select elements
+        const taskInput = document.getElementById("taskInput");
+        const addBtn = document.getElementById("addBtn");
+        const taskList = document.getElementById("taskList");
+
+        // Add task when button is clicked
+        addBtn.addEventListener("click", addTask);
+
+        // Add task when Enter key is pressed
+        taskInput.addEventListener("keydown", e => {
+            if (e.key === "Enter") addTask();
+        });
+
+        /**
+         * Create a new task item and append to list
+         * @param {string} text - Task content
+         */
+        function createTask(text) {
+            const li = document.createElement("li");
+
+            // Task HTML structure
+            li.innerHTML = `
+                <span>${text}</span>
+                <button class="delete-btn">
+                    <i class="bx bx-x"></i>
+                </button>
+            `;
+
+            taskList.appendChild(li);
+        }
+
+        /**
+         * Get input value and add new task
+         */
+        function addTask() {
+            const text = taskInput.value.trim();
+
+            // Prevent empty input
+            if (!text) return alert("Enter a task");
+
+            createTask(text);
+
+            // Clear input after adding
+            taskInput.value = "";
+        }
+
+        // Add default task on page load
+        window.addEventListener("DOMContentLoaded", () => {
+            createTask("Buy Groceries");
+        });
+
+        /**
+         * Event delegation for delete button
+         * Removes the clicked task
+         */
+        document.addEventListener("click", e => {
+            if (e.target.closest(".delete-btn")) {
+                e.target.closest("li").remove();
+            }
+        });
+    </script>
+
 </body>
+
 </html>
