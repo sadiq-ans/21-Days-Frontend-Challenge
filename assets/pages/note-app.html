@@ -1,11 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Note App</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Boxicons (icons library) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (theme variables, colors, etc.) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset + Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--s-dark-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Main Wrapper */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 100px 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Input Section */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            height: 100px;
+            font-size: 16px;
+            background: var(--s-primary-bg-color);
+            color: var(--s-tertiary-color);
+            border-radius: 16px;
+            padding: 20px;
+            transition: 0.3s ease;
+            border: var(--s-border);
+        }
+
+        textarea::placeholder {
+            color: var(--s-tertiary-color);
+        }
+
+        select {
+            background: var(--s-secondry-bg-color);
+            border: none;
+        }
+
+        select,
+        button {
+            padding: 10px;
+            border-radius: 10px;
+            color: var(--s-tertiary-color);
+            font-size: 16px;
+            transition: var(--s-transition);
+        }
+
+        button {
+            background: var(--s-primary-color);
+            color: white;
+            border: 1px solid var(--s-primary-color);
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: transparent;
+        }
+
+        /* Filter Buttons */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filters button {
+            background: var(--s-primary-bg-color);
+            border: none;
+        }
+
+        /* Notes Grid */
+        .notes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        /* Single Note Card */
+        .note {
+            background: var(--s-dark-color);
+            border: 1px solid var(--s-secondry-bg-color);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .note small {
+            display: block;
+            margin-top: 10px;
+            color: var(--s-tertiary-color);
+        }
+
+        /* Edit + Delete Buttons */
+        .note-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .note-actions button {
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div class="container">
+        <h1>Notes App</h1>
+
+        <!-- Input Controls -->
+        <div class="controls">
+            <textarea id="noteInput" placeholder="Write your note..."></textarea>
+
+            <!-- Category Selection -->
+            <select id="categorySelect">
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Ideas">Ideas</option>
+            </select>
+
+            <button id="addBtn">Add Note</button>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="filters">
+            <button onclick="setFilter('All')">All</button>
+            <button onclick="setFilter('Work')">Work</button>
+            <button onclick="setFilter('Personal')">Personal</button>
+            <button onclick="setFilter('Ideas')">Ideas</button>
+        </div>
+
+        <!-- Notes Output -->
+        <div id="notesContainer" class="notes-container"></div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const noteInput = document.getElementById("noteInput");
+        const categorySelect = document.getElementById("categorySelect");
+        const addBtn = document.getElementById("addBtn");
+        const notesContainer = document.getElementById("notesContainer");
+
+        // Load notes from localStorage (or empty array)
+        let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+        let editIndex = -1;      // Track which note is being edited
+        let currentFilter = "All"; // Current category filter
+
+        // Render Notes Function
+        function renderNotes() {
+            notesContainer.innerHTML = "";
+
+            // Apply filter
+            const filteredNotes = notes.filter(note => {
+                return currentFilter === "All" || note.category === currentFilter;
+            });
+
+            // Empty state
+            if (filteredNotes.length === 0) {
+                notesContainer.innerHTML = "<p>No notes found</p>";
+                return;
+            }
+
+            // Create note cards
+            filteredNotes.forEach((note, index) => {
+                const noteDiv = document.createElement("div");
+                noteDiv.classList.add("note");
+
+                noteDiv.innerHTML = `
+                    <p>${note.text}</p>
+                    <small>${note.category}</small>
+                    <div class="note-actions">
+                        <button onclick="editNote(${index})">Edit</button>
+                        <button onclick="deleteNote(${index})">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                notesContainer.appendChild(noteDiv);
+            });
+        }
+
+        // Add or Update Note
+        addBtn.addEventListener("click", () => {
+            const text = noteInput.value.trim();
+            const category = categorySelect.value;
+
+            // Validation
+            if (text === "") {
+                alert("Note cannot be empty!");
+                return;
+            }
+
+            // Add or Update logic
+            if (editIndex === -1) {
+                notes.push({ text, category });
+            } else {
+                notes[editIndex] = { text, category };
+                editIndex = -1;
+                addBtn.textContent = "Add Note";
+            }
+
+            // Save to localStorage
+            localStorage.setItem("notes", JSON.stringify(notes));
+
+            // Reset input
+            noteInput.value = "";
+
+            renderNotes();
+        });
+
+        // Delete Note
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            localStorage.setItem("notes", JSON.stringify(notes));
+            renderNotes();
+        }
+
+        // Edit Note
+        function editNote(index) {
+            const note = notes[index];
+
+            noteInput.value = note.text;
+            categorySelect.value = note.category;
+
+            editIndex = index;
+            addBtn.textContent = "Update Note";
+        }
+
+        // Set Category Filter
+        function setFilter(category) {
+            currentFilter = category;
+            renderNotes();
+        }
+
+        // Initial Render
+        renderNotes();
+    </script>
+
 </body>
+
 </html>
