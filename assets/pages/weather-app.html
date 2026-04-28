@@ -1,11 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Weather App</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons Library -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (Global variables/colors) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset + Base Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Body layout (centered UI) */
+        body {
+            background: var(--s-dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        /* Main container */
+        .container {
+            padding: 20px;
+            width: 380px;
+            border-radius: 10px;
+        }
+
+        /* Card layout */
+        .app-card {
+            text-align: center;
+        }
+
+        /* Title */
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Search input + button */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* Input styling */
+        input {
+            padding: 10px;
+            font-size: 16px;
+            background: transparent;
+            border: 2px solid var(--s-secondry-bg-color);
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+            color: white;
+            flex: 1;
+        }
+
+        /* Input focus effect */
+        input:focus {
+            border-color: var(--s-primary-color);
+        }
+
+        /* Placeholder styling */
+        input::placeholder {
+            color: var(--s-tertiary-color);
+        }
+
+        /* Button base */
+        button {
+            padding: 6px 12px;
+            border: none;
+        }
+
+        /* Search button */
+        .get-weather {
+            background: var(--s-primary-color);
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Weather Icon */
+        #icon {
+            margin: 10px auto;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
+
+        /* Temperature display */
+        .temp-display {
+            font-size: 3rem;
+            font-weight: 300;
+            margin: 10px 0;
+        }
+
+        /* City name */
+        .city-name {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Grid for weather details */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+        }
+
+        /* Each detail box (humidity, wind) */
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: var(--s-primary-bg-color);
+            border: var(--s-border);
+            padding: 20px 12px;
+            border-radius: 8px;
+        }
+
+        /* Icon inside detail */
+        .detail-item i {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        /* Label text */
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div class="container">
+        <div class="app-card">
+
+            <!-- App Title -->
+            <h1>Weather App</h1>
+
+            <!-- Search Section -->
+            <div class="search-box">
+                <!-- Input field (Enter key triggers search) -->
+                <input type="text" id="city" placeholder="Search city..."
+                    onkeydown="if(event.key==='Enter') getWeather()">
+
+                <!-- Search Button -->
+                <button class="get-weather" onclick="getWeather()">
+                    <i class="bx bx-search"></i>
+                </button>
+            </div>
+
+            <!-- Weather Result Section (Hidden by default) -->
+            <div id="weather-result" style="display: none;">
+
+                <!-- Weather Icon -->
+                <img id="icon" width="100" src="" alt="weather icon">
+
+                <!-- Temperature -->
+                <div class="temp-display" id="temp">--°C</div>
+
+                <!-- City Name -->
+                <div class="city-name" id="name">---</div>
+
+                <!-- Extra Details -->
+                <div class="details-grid">
+
+                    <!-- Humidity -->
+                    <div class="detail-item">
+                        <i class='bx bx-droplet'></i>
+                        <span id="humidity">--%</span>
+                        <span class="detail-label">Humidity</span>
+                    </div>
+
+                    <!-- Wind Speed -->
+                    <div class="detail-item">
+                        <i class='bx bx-wind'></i>
+                        <span id="wind">-- km/h</span>
+                        <span class="detail-label">Wind Speed</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch weather data from API
+        async function getWeather() {
+            // Get user input and result container
+            const cityInput = document.getElementById("city");
+            const city = cityInput.value.trim();
+            const resultArea = document.getElementById("weather-result");
+
+            // Prevent empty search
+            if (!city) return;
+
+            // OpenWeather API configuration
+            const apiKey = "024ced2b4c81550d546f502bbf3d8449";
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            try {
+                // Fetch data from API
+                const res = await fetch(url);
+                const data = await res.json();
+
+                // Handle invalid city
+                if (data.cod !== 200) {
+                    alert("City not found. Please try again.");
+                    return;
+                }
+
+                // Show result section
+                resultArea.style.display = "block";
+
+                // Update UI with API data
+                document.getElementById("name").innerText = data.name;
+                document.getElementById("temp").innerText = Math.round(data.main.temp) + "°C";
+                document.getElementById("humidity").innerText = data.main.humidity + "%";
+                document.getElementById("wind").innerText = Math.round(data.wind.speed) + " km/h";
+
+                // Update weather icon
+                const icon = document.getElementById("icon");
+                icon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+                // Clear input field after search
+                cityInput.value = "";
+            } catch (error) {
+                // Handle network/API error
+                alert("Unable to connect to weather service.");
+            }
+        }
+    </script>
+
 </body>
+
 </html>
