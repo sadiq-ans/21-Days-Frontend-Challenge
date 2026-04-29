@@ -1,11 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Product Filter App</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons Library (optional) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- External CSS (Global variables/colors) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--s-dark-color);
+            color: white;
+        }
+
+        /* Main layout container */
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 100px 20px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        /* Search input styling */
+        #searchInput {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background: transparent;
+            border: 2px solid var(--s-secondry-bg-color);
+            border-radius: 5px;
+            outline: none;
+            color: white;
+        }
+
+        /* Filter buttons */
+        .filters button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            background: var(--s-primary-bg-color);
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .filters button:hover {
+            background: var(--s-secondry-bg-color);
+        }
+
+        /* Products grid layout */
+        .products {
+            display: grid;
+            justify-content: center;
+            grid-template-columns: repeat(4, 1fr);
+            margin-top: 26px;
+        }
+
+        /* Product card */
+        .card {
+            border-radius: 10px;
+            margin: 8px;
+            padding-bottom: 26px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card h3 {
+            margin: 10px 0 5px;
+        }
+
+        .card p {
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .card span {
+            background: var(--s-secondry-bg-color);
+            padding: 5px 10px;
+            border-radius: 100px;
+            font-size: 14px;
+        }
+    </style>
 </head>
+
 <body>
-    
+    <div class="container">
+        <h1>Product Filter</h1>
+
+        <!-- Search Input -->
+        <input type="text" id="searchInput" placeholder="Search products...">
+
+        <!-- Category Filters -->
+        <div class="filters">
+            <button onclick="filterCategory('all')">All</button>
+            <button onclick="filterCategory('Sofa')">Sofa</button>
+            <button onclick="filterCategory('Chairs')">Chairs</button>
+            <button onclick="filterCategory('Storage')">Storage</button>
+            <button onclick="filterCategory('Lighting')">Lighting</button>
+        </div>
+
+        <!-- Product Cards Container -->
+        <div id="productContainer" class="products"></div>
+    </div>
+
+    <script>
+        // Static product data (can be replaced with API later)
+        const products = [
+            { name: "Loop Sofa Armrest", category: "Sofa", price: 3289, image: "https://hyper-theme-demo.myshopify.com/cdn/shop/files/LoopSofaArmrest_a.jpg?v=1750923096&width=1240" },
+            { name: "Feast Chair", category: "Chairs", price: 390, image: "https://hyper-theme-demo.myshopify.com/cdn/shop/files/FeastChair_a.jpg?v=1750927169&width=710" },
+            { name: "Arc Rack Shelf", category: "Storage", price: 70, image: "https://hyper-theme-demo.myshopify.com/cdn/shop/files/ArcRackShelf.jpg?v=1750928519&width=810" },
+            { name: "Flip Table Lamp", category: "Lighting", price: 605, image: "https://hyper-theme-demo.myshopify.com/cdn/shop/files/FlipTableLamp.jpg?v=1750929063&width=810" },
+            { name: "Turn Chair Cozy", category: "Chairs", price: 369, image: "https://hyper-theme-demo.myshopify.com/cdn/shop/files/TurnChairCozy.jpg?v=1750923469&width=810" },
+            { name: "Ray Sofa Basic", category: "Sofa", price: 3289, image: "https://hyper-theme-demo.myshopify.com/cdn/shop/files/RaySofaBasic.jpg?v=1750923016&width=810" }
+        ];
+
+        // DOM elements
+        const container = document.getElementById("productContainer");
+        const searchInput = document.getElementById("searchInput");
+
+        // Track selected category
+        let currentCategory = "all";
+
+        // Render products to UI
+        function displayProducts(items) {
+            if (items.length === 0) {
+                container.innerHTML = "<p>No products found</p>";
+                return;
+            }
+
+            container.innerHTML = items.map(product => `
+                <div class="card">
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>$${product.price}</p>
+                    <span>${product.category}</span>
+                </div>
+            `).join("");
+        }
+
+        // Update selected category and re-filter
+        function filterCategory(category) {
+            currentCategory = category;
+            applyFilters();
+        }
+
+        // Apply both category + search filters
+        function applyFilters() {
+            let filtered = products;
+
+            // Filter by category
+            if (currentCategory !== "all") {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+
+            // Filter by search text
+            const searchValue = searchInput.value.toLowerCase();
+            filtered = filtered.filter(p =>
+                p.name.toLowerCase().includes(searchValue)
+            );
+
+            displayProducts(filtered);
+        }
+
+        // Listen to typing in search input
+        searchInput.addEventListener("input", applyFilters);
+
+        // Initial render
+        displayProducts(products);
+    </script>
 </body>
+
 </html>
