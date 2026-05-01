@@ -1,11 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Boxicons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Page Layout */
+    body {
+      background: var(--s-dark-color);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      padding: 0 6px;
+    }
+
+    /* Main App Container */
+    .app {
+      background: transparent;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 8px;
+      padding: 25px;
+    }
+
+    /* Title Section */
+    .title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin-bottom: 50px;
+    }
+
+    /* Header: Progress + Timer */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .progress {
+      font-size: 14px;
+      color: var(--s-primary-color);
+    }
+
+    .timer {
+      font-size: 16px;
+      background: rgba(99, 102, 241, 0.2);
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--s-secondry-color);
+    }
+
+    /* Question Text */
+    .question {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    /* Options Buttons */
+    .options button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      color: white;
+      margin-bottom: 8px;
+      background: var(--s-primary-bg-color);
+      border: var(--s-border);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: var(--s-transition);
+    }
+
+    /* Hover State */
+    .options button:hover {
+      background: transparent;
+      border: 1px solid var(--s-primary-color);
+    }
+
+    /* Answer States */
+    .options button.correct {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    .options button.wrong {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Next Button */
+    .next-btn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #667eea;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Result Section */
+    .result {
+      text-align: center;
+    }
+
+    /* Utility Classes */
+    .hidden {
+      display: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 500px) {
+      .app {
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    
+  <div class="app">
+
+    <!-- App Title -->
+    <div class="title">
+      <h1>Quiz App</h1>
+    </div>
+
+    <!-- Header: Progress + Timer -->
+    <div class="header">
+      <div class="progress" id="progress">Question 1 of 3</div>
+      <div class="timer" id="timer">10s</div>
+    </div>
+
+    <!-- Quiz Section -->
+    <div id="quiz-container">
+
+      <!-- Question Text -->
+      <div class="question" id="question">Question</div>
+
+      <!-- Answer Options (Generated via JS) -->
+      <div class="options" id="options"></div>
+
+      <!-- Next Button -->
+      <button class="next-btn" id="nextBtn">
+        Next
+        <i data-lucide="arrow-right"></i>
+      </button>
+
+    </div>
+
+    <!-- Result Section (Hidden initially) -->
+    <div id="result" class="result hidden">
+      <h2>Your Score</h2>
+      <p id="score"></p>
+
+      <!-- Restart Button -->
+      <button class="next-btn" onclick="location.reload()">
+        Restart
+        <i data-lucide="rotate-ccw"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // Quiz questions data
+    const questions = [
+      { q: "What is JavaScript?", options: ["Language", "Library", "Framework", "Database"], answer: 0 },
+      { q: "Which is used for styling?", options: ["HTML", "CSS", "JS", "Python"], answer: 1 },
+      { q: "Which keyword declares variable?", options: ["var", "int", "string", "define"], answer: 0 }
+    ];
+
+    // State variables
+    let current = 0; // current question index
+    let score = 0;   // user score
+    let time = 10;   // timer for each question
+    let timer;       // interval reference
+
+    // DOM elements
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const nextBtn = document.getElementById('nextBtn');
+    const timerEl = document.getElementById('timer');
+    const progressEl = document.getElementById('progress');
+
+    // Load current question
+    function loadQuestion() {
+      clearInterval(timer); // reset timer
+      time = 10;
+      startTimer();
+
+      const q = questions[current];
+      questionEl.textContent = q.q;
+      optionsEl.innerHTML = '';
+
+      // Update progress text
+      progressEl.textContent = `Question ${current + 1} of ${questions.length}`;
+
+      // Create option buttons
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(i);
+        optionsEl.appendChild(btn);
+      });
+
+      // Re-render icons
+      lucide.createIcons();
+    }
+
+    // Handle answer selection
+    function selectAnswer(index) {
+      const correct = questions[current].answer;
+      const buttons = optionsEl.children;
+
+      // Disable all buttons and highlight answers
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+
+        if (i === correct) buttons[i].classList.add('correct');
+        if (i === index && i !== correct) buttons[i].classList.add('wrong');
+      }
+
+      // Increase score if correct
+      if (index === correct) score++;
+
+      clearInterval(timer); // stop timer after selection
+    }
+
+    // Start countdown timer
+    function startTimer() {
+      timerEl.textContent = time + 's';
+
+      timer = setInterval(() => {
+        time--;
+        timerEl.textContent = time + 's';
+
+        // Auto-submit when time ends
+        if (time === 0) {
+          clearInterval(timer);
+          selectAnswer(-1); // no answer selected
+        }
+      }, 1000);
+    }
+
+    // Next button click handler
+    nextBtn.onclick = () => {
+      current++;
+
+      if (current < questions.length) {
+        loadQuestion(); // load next question
+      } else {
+        showResult();   // show final result
+      }
+    };
+
+    // Display result screen
+    function showResult() {
+      document.getElementById('quiz-container').classList.add('hidden');
+      document.getElementById('result').classList.remove('hidden');
+
+      document.getElementById('score').textContent = score + ' / ' + questions.length;
+
+      lucide.createIcons();
+    }
+
+    // Initialize first question
+    loadQuestion();
+  </script>
 </body>
+
 </html>
