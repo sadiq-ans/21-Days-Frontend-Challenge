@@ -145,6 +145,13 @@
             background: var(--s-secondry-bg-color);
             color: var(--s-secondry-color);
             border: var(--s-border);
+            transition: var(--s-transition);
+        }
+
+        .fb:hover,
+        .tw:hover,
+        .rd:hover {
+            border: 1px solid var(--s-primary-color);
         }
 
         /* Social Icons */
@@ -163,8 +170,8 @@
             margin-bottom: 12px;
             border-radius: 8px;
             border: 1px solid var(--s-primary-color);
-            background: var(--s-secondry-bg-color);
-            color: var(--s-secondry-color);
+            background: var(--s-primary-color);
+            color: white;
             font-weight: 500;
             cursor: pointer;
             transition: 0.3s;
