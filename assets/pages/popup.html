@@ -1,11 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Basic Meta Setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Modal / Popup System</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons (Boxicons + Lucide) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Reset + Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        /* Center content on screen */
+        body {
+            color: white;
+            background: var(--s-dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Open Modal Button */
+        .open-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border: none;
+            color: white;
+            background: var(--s-primary-color);
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Modal Overlay (hidden by default) */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* Hidden state */
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        /* Active Modal (visible) */
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Modal Content Box */
+        .modal-box {
+            width: 95%;
+            max-width: 380px;
+            padding: 25px;
+            box-shadow: var(--s-shadow);
+            text-align: center;
+            position: relative;
+
+            /* Animation (slide up) */
+            transform: translateY(30px);
+            transition: 0.3s;
+
+            /* Styling */
+            background: var(--s-primary-bg-color);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        /* Animate when modal opens */
+        .modal.active .modal-box {
+            transform: translateY(0);
+        }
+
+        /* Close (X) icon */
+        .close {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--s-primary-color);
+        }
+
+        /* Headings */
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        /* Description text */
+        p {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--s-tertiary-color);
+        }
+
+        /* Social Buttons Container */
+        .socials {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Social Buttons */
+        .socials button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Individual Social Styles */
+        .fb,
+        .tw,
+        .rd {
+            background: var(--s-secondry-bg-color);
+            color: var(--s-secondry-color);
+            border: var(--s-border);
+        }
+
+        /* Social Icons */
+        .socials i {
+            font-size: 18px;
+        }
+
+        /* Copy Link Button */
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--s-primary-color);
+            background: var(--s-secondry-bg-color);
+            color: var(--s-secondry-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Hover effect */
+        .copy-btn:hover {
+            background: transparent;
+        }
+
+        /* Success state after copy */
+        .copy-btn.copied {
+            background: #dcfce7;
+            color: var(--s-success);
+        }
+
+        /* Close text link */
+        .close-text {
+            color: var(--s-primary-color);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media(max-width:500px) {
+            .modal-box {
+                padding: 18px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <!-- Button to open modal -->
+    <button class="open-btn" id="openModal">
+        <i class='bx bx-share-alt'></i>
+        Share Article
+    </button>
+
+    <!-- Modal Structure -->
+    <div class="modal" id="modal">
+        <div class="modal-box">
+
+            <!-- Close Icon -->
+            <span class="close">&times;</span>
+
+            <!-- Modal Content -->
+            <h2>Share this article</h2>
+            <p>If you liked this article share it with your friends.</p>
+
+            <!-- Social Buttons -->
+            <div class="socials">
+                <button class="fb">
+                    <i class='bx bxl-facebook'></i>
+                </button>
+                <button class="tw">
+                    <i class='bx bxl-twitter'></i>
+                </button>
+                <button class="rd">
+                    <i class='bx bxl-reddit'></i>
+                </button>
+            </div>
+
+            <!-- Copy Link Button -->
+            <button class="copy-btn" id="copyBtn">
+                <i class='bx bx-copy'></i>
+                Copy Link
+            </button>
+
+            <!-- Close Text -->
+            <span class="close-text">Close the popup</span>
+        </div>
+    </div>
+
+    <script>
+        // Get elements
+        const modal = document.getElementById("modal");
+        const openBtn = document.getElementById("openModal");
+
+        // Open modal
+        openBtn.addEventListener("click", () => {
+            modal.classList.add("active");
+        });
+
+        // Close modal (X icon + text)
+        modal.querySelectorAll(".close, .close-text").forEach(el => {
+            el.addEventListener("click", () => {
+                modal.classList.remove("active");
+            });
+        });
+
+        // Close when clicking outside modal box
+        modal.addEventListener("click", e => {
+            if (e.target === modal) modal.classList.remove("active");
+        });
+
+        // Close using ESC key
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") modal.classList.remove("active");
+        });
+
+        // Copy Link functionality
+        const copyBtn = document.getElementById("copyBtn");
+
+        copyBtn.addEventListener("click", async () => {
+            try {
+                // Copy current page URL
+                await navigator.clipboard.writeText(window.location.href);
+
+                // Show success state
+                copyBtn.classList.add("copied");
+                copyBtn.innerHTML = "<i class='bx bx-check'></i> Copied!";
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyBtn.classList.remove("copied");
+                    copyBtn.innerHTML = "<i class='bx bx-copy'></i> Copy Link";
+                }, 2000);
+
+            } catch (err) {
+                alert("Copy failed");
+            }
+        });
+    </script>
+
 </body>
+
 </html>
