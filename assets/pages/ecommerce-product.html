@@ -1,11 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Basic Meta Setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>E-commerce</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= ROOT VARIABLES ================= */
+        :root {
+            --dark: #0f172a;     /* Background color */
+            --card: #1e293b;     /* Card background */
+            --primary: #6366f1;  /* Button / accent color */
+            --light: #cbd5f5;    /* Secondary text */
+        }
+
+        /* ================= GLOBAL RESET ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: white;
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #020617;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        header h1 {
+            font-size: 22px;
+        }
+
+        /* Cart info (items count + total price) */
+        .cart-detail {
+            font-size: 14px;
+            color: var(--light);
+            margin: auto;
+        }
+
+        /* ================= PRODUCT GRID ================= */
+        #product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        /* Product Card */
+        .card {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        /* Hover effect */
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Product image */
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .card h3 {
+            margin: 10px 0;
+        }
+
+        .card p {
+            color: var(--light);
+        }
+
+        /* Add to cart button */
+        .card button {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Button hover effect */
+        .card button:hover {
+            background: transparent;
+            border: 1px solid var(--primary);
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .card img {
+                height: 150px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <!-- Cart Summary -->
+        <div class="cart-detail">
+            Items: <span id="cart-count">0</span> |
+            ₹<span id="cart-total">0</span>
+        </div>
+    </header>
+
+    <!-- ================= PRODUCT SECTION ================= -->
+    <section>
+        <div id="product-list"></div>
+    </section>
+
+    <script>
+        /* ================= PRODUCT DATA ================= */
+        const products = [
+            {
+                id: 1,
+                name: "Bolzano swivel armchair",
+                price: 899,
+                image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-bolzano-armchair-with-swivel-function-6-3_79762203-fd8f-427e-93d5-4431578a1e16.jpg?v=1776767479&width=990"
+            },
+            {
+                id: 2,
+                name: "Cradle lounge chair",
+                price: 699,
+                image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-cradle-lounge-hair-2_4f23e748-f754-479d-a497-8197c32ae6c1.jpg?v=1776767431&width=990"
+            },
+            {
+                id: 3,
+                name: "Sweet art swivel armchair",
+                price: 1099,
+                image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-sweet-art-armchair-with-swivel-function-2-21-3_c50b70f7-6c5b-4278-a733-f5969497735e.jpg?v=1776767441&width=990"
+            },
+            {
+                id: 4,
+                name: "Nest lounge chair",
+                price: 1090,
+                image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-nest-lounge-chair-1_rmbg_resize.jpg?v=1776767425&width=990"
+            }
+        ];
+
+        /* ================= CART STATE ================= */
+        let cart = []; // Stores added products with quantity
+
+        /* ================= DOM ELEMENTS ================= */
+        const productList = document.getElementById("product-list");
+        const cartCount = document.getElementById("cart-count");
+        const cartTotal = document.getElementById("cart-total");
+
+        /* ================= RENDER PRODUCTS ================= */
+        function renderProducts() {
+            productList.innerHTML = ""; // Clear existing products
+
+            products.forEach(product => {
+                // Create product card dynamically
+                productList.innerHTML += `
+                    <div class="card">
+                        <img src="${product.image}">
+                        <h3>${product.name}</h3>
+                        <p>₹${product.price}</p>
+                        <button onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        /* ================= ADD TO CART ================= */
+        function addToCart(id) {
+            // Check if product already exists in cart
+            const item = cart.find(p => p.id === id);
+
+            if (item) {
+                // If exists → increase quantity
+                item.quantity++;
+            } else {
+                // If new → add product with quantity 1
+                const product = products.find(p => p.id === id);
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCart(); // Update UI
+        }
+
+        /* ================= UPDATE CART ================= */
+        function updateCart() {
+            let total = 0; // Total price
+            let count = 0; // Total items
+
+            // Calculate total and count
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                count += item.quantity;
+            });
+
+            // Update UI
+            cartCount.textContent = count;
+            cartTotal.textContent = total;
+        }
+
+        /* ================= INITIAL LOAD ================= */
+        renderProducts(); // Display products on page load
+    </script>
+
 </body>
+
 </html>
