@@ -2,14 +2,16 @@
 <html lang="en">
 
 <head>
+    <!-- Basic Meta Setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-commerce Cart</title>
+    <title>Cart System</title>
 
-    <!-- Font -->
+    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
+        /* ================= ROOT COLORS ================= */
         :root {
             --dark: #0f172a;
             --card: #1e293b;
@@ -17,6 +19,7 @@
             --light: #cbd5f5;
         }
 
+        /* ================= GLOBAL RESET ================= */
         * {
             margin: 0;
             padding: 0;
@@ -27,69 +30,13 @@
         body {
             background: var(--dark);
             color: white;
-            padding: 40px 20px;
+            padding: 150px 15px;
         }
 
-        header h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        /* PRODUCT GRID */
-        #product-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            max-width: 1100px;
-            margin: auto;
-        }
-
-        .card {
-            background: var(--card);
-            padding: 15px;
-            border-radius: 12px;
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .card h3 {
-            margin: 10px 0;
-        }
-
-        .card p {
-            color: var(--light);
-        }
-
-        .card button {
-            margin-top: 10px;
-            width: 100%;
-            padding: 8px;
-            border: none;
-            background: var(--primary);
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .card button:hover {
-            background: transparent;
-            border: 1px solid var(--primary);
-        }
-
-        /* CART */
+        /* ================= CART SECTION ================= */
         .section {
             max-width: 900px;
-            margin: 50px auto 0;
+            margin: auto;
         }
 
         .cart-container {
@@ -98,12 +45,14 @@
             border-radius: 12px;
         }
 
+        /* Top section (Title + Total Info) */
         .cart-detail {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
         }
 
+        /* Each cart item row */
         .cart-item {
             display: flex;
             justify-content: space-between;
@@ -112,6 +61,7 @@
             border-bottom: 1px solid #334155;
         }
 
+        /* Left side of item (image + info) */
         .cart-left {
             display: flex;
             align-items: center;
@@ -124,6 +74,7 @@
             border-radius: 8px;
         }
 
+        /* Quantity controls (+ / - buttons) */
         .qty-control {
             display: flex;
             align-items: center;
@@ -141,6 +92,7 @@
             cursor: pointer;
         }
 
+        /* Remove button */
         .remove-btn {
             background: transparent;
             border: none;
@@ -148,6 +100,7 @@
             cursor: pointer;
         }
 
+        /* Footer section (Total + Checkout) */
         .cart-footer {
             margin-top: 20px;
         }
@@ -163,6 +116,11 @@
             cursor: pointer;
         }
 
+        .cart-footer h3 {
+            margin-bottom: 8px;
+        }
+
+        /* Empty cart message */
         #empty-msg {
             text-align: center;
             color: gray;
@@ -170,82 +128,12 @@
             display: none;
         }
 
-        .cart-footer h3 {
-            margin-bottom: 8px;
-        }
-
-        /* TABLET */
+        /* ================= RESPONSIVE ================= */
         @media (max-width: 768px) {
-            body {
-                padding: 20px 10px;
-            }
-
-            header h1 {
-                font-size: 22px;
-            }
-
-            .cart-detail {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
-            }
-
             .cart-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
-            }
-
-            .cart-left {
-                width: 100%;
-            }
-
-            .cart-left img {
-                width: 50px;
-                height: 50px;
-            }
-
-            .cart-footer h3 {
-                font-size: 18px;
-            }
-        }
-
-        /* MOBILE */
-        @media (max-width: 480px) {
-            #product-list {
-                grid-template-columns: 1fr;
-            }
-
-            .card img {
-                height: 150px;
-            }
-
-            .card h3 {
-                font-size: 16px;
-            }
-
-            .card p {
-                font-size: 14px;
-            }
-
-            .card button {
-                padding: 6px;
-                font-size: 14px;
-            }
-
-            .cart-item {
-                padding: 10px 0;
-            }
-
-            .qty-control button {
-                width: 24px;
-                height: 24px;
-                font-size: 12px;
-            }
-
-            .cart-footer button {
-                font-size: 14px;
-                padding: 8px;
             }
         }
     </style>
@@ -253,19 +141,11 @@
 
 <body>
 
-    <header>
-        <h1>Add to Cart</h1>
-    </header>
-
-    <!-- PRODUCTS -->
-    <section>
-        <div id="product-list"></div>
-    </section>
-
-    <!-- CART -->
+    <!-- ================= CART UI ================= -->
     <section class="section">
         <div class="cart-container">
 
+            <!-- Header: Title + Count + Total -->
             <div class="cart-detail">
                 <h2>Your Cart</h2>
                 <div>
@@ -274,67 +154,51 @@
                 </div>
             </div>
 
+            <!-- Dynamic cart items will render here -->
             <div id="cart-items"></div>
 
+            <!-- Empty message -->
             <div id="empty-msg">No product added</div>
 
+            <!-- Footer: Final total + Checkout -->
             <div class="cart-footer">
                 <h3>Total: ₹<span id="final-total">0</span></h3>
-                <button>Continue</button>
+                <button>Checkout</button>
             </div>
 
         </div>
     </section>
 
     <script>
-        const products = [
-            { id: 1, name: "Bolzano swivel armchair", price: 899, image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-bolzano-armchair-with-swivel-function-6-3_79762203-fd8f-427e-93d5-4431578a1e16.jpg?v=1776767479&width=990" },
-            { id: 2, name: "Cradle lounge chair", price: 699, image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-cradle-lounge-hair-2_4f23e748-f754-479d-a497-8197c32ae6c1.jpg?v=1776767431&width=990" },
-            { id: 3, name: "Sweet art swivel armchair", price: 1099, image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-sweet-art-armchair-with-swivel-function-2-21-3_c50b70f7-6c5b-4278-a733-f5969497735e.jpg?v=1776767441&width=990" },
-            { id: 4, name: "Nest lounge chair", price: 1090, image: "https://athora-theme-nuxio.myshopify.com/cdn/shop/files/product-nest-lounge-chair-1_rmbg_resize.jpg?v=1776767425&width=990" }
+        /* ================= INITIAL DATA ================= */
+
+        // Load cart from localStorage OR use demo data
+        let cart = JSON.parse(localStorage.getItem("cart")) || [
+            {
+                id: 1,
+                name: "Demo Chair",
+                price: 899,
+                image: "https://via.placeholder.com/100",
+                quantity: 1
+            }
         ];
 
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        const productList = document.getElementById("product-list");
+        /* ================= DOM ELEMENTS ================= */
         const cartItems = document.getElementById("cart-items");
         const cartCount = document.getElementById("cart-count");
         const cartTotal = document.getElementById("cart-total");
         const finalTotal = document.getElementById("final-total");
         const emptyMsg = document.getElementById("empty-msg");
 
-        function renderProducts() {
-            productList.innerHTML = "";
-            products.forEach(product => {
-                productList.innerHTML += `
-                    <div class="card">
-                        <img src="${product.image}">
-                        <h3>${product.name}</h3>
-                        <p>₹${product.price}</p>
-                        <button onclick="addToCart(${product.id})">Add to Cart</button>
-                    </div>
-                `;
-            });
-        }
+        /* ================= CART ACTIONS ================= */
 
-        function addToCart(id) {
-            const item = cart.find(p => p.id === id);
-
-            if (item) {
-                item.quantity++;
-            } else {
-                const product = products.find(p => p.id === id);
-                cart.push({ ...product, quantity: 1 });
-            }
-
-            updateCart();
-        }
-
+        // Increase quantity of a product
         function increaseQty(index) {
             cart[index].quantity++;
             updateCart();
         }
 
+        // Decrease quantity OR remove if quantity = 1
         function decreaseQty(index) {
             if (cart[index].quantity > 1) {
                 cart[index].quantity--;
@@ -344,14 +208,18 @@
             updateCart();
         }
 
+        // Remove item completely
         function removeItem(index) {
             cart.splice(index, 1);
             updateCart();
         }
 
+        /* ================= RENDER CART ================= */
+
         function renderCart() {
             cartItems.innerHTML = "";
 
+            // Show empty message if cart is empty
             if (cart.length === 0) {
                 emptyMsg.style.display = "block";
                 return;
@@ -359,52 +227,59 @@
                 emptyMsg.style.display = "none";
             }
 
+            // Loop through cart items and render UI
             cart.forEach((item, index) => {
                 cartItems.innerHTML += `
-                    <div class="cart-item">
-                        <div class="cart-left">
-                            <img src="${item.image}">
-                            <div>
-                                <p>${item.name}</p>
-
-                                <div class="qty-control">
-                                    <button onclick="decreaseQty(${index})">−</button>
-                                    <span>${item.quantity}</span>
-                                    <button onclick="increaseQty(${index})">+</button>
-                                </div>
-
-                                <small>₹${item.price} each</small>
-                            </div>
-                        </div>
-
+                <div class="cart-item">
+                    <div class="cart-left">
+                        <img src="${item.image}">
                         <div>
-                            ₹${item.price * item.quantity}
-                            <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+                            <p>${item.name}</p>
+
+                            <div class="qty-control">
+                                <button onclick="decreaseQty(${index})">−</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="increaseQty(${index})">+</button>
+                            </div>
+
+                            <small>₹${item.price} each</small>
                         </div>
                     </div>
+
+                    <div>
+                        ₹${item.price * item.quantity}
+                        <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+                    </div>
+                </div>
                 `;
             });
         }
+
+        /* ================= UPDATE CART ================= */
 
         function updateCart() {
             let total = 0;
             let count = 0;
 
+            // Calculate total price and total quantity
             cart.forEach(item => {
                 total += item.price * item.quantity;
                 count += item.quantity;
             });
 
+            // Update UI values
             cartCount.textContent = count;
             cartTotal.textContent = total;
             finalTotal.textContent = total;
 
+            // Save updated cart to localStorage
             localStorage.setItem("cart", JSON.stringify(cart));
 
+            // Re-render cart UI
             renderCart();
         }
 
-        renderProducts();
+        // Initial load
         updateCart();
     </script>
 
