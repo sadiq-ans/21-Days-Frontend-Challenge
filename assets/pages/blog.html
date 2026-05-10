@@ -1,11 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Basic Meta Setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <!-- Page Title -->
+    <title>Day 19 - Blog UI</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* ===============================
+           RESET
+        =============================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif !important;
+        }
+
+        body {
+            background: var(--s-dark-color);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* ===============================
+           HEADER
+        =============================== */
+        header {
+            padding: 24px 8%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--s-primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #cbd5e1;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+
+        .nav-links a:hover {
+            color: var(--s-primary-color);
+        }
+
+        /* ===============================
+           HERO SECTION
+        =============================== */
+        .hero {
+            padding: 80px 8% 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            max-width: 700px;
+            margin: auto;
+            color: #94a3b8;
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* ===============================
+           SEARCH BAR
+        =============================== */
+        .search-container {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: none;
+            outline: none;
+            background: #1e293b;
+            color: white;
+            font-size: 15px;
+        }
+
+        /* ===============================
+           BLOG SECTION
+        =============================== */
+        .blog-section {
+            padding: 20px 8% 80px;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px;
+        }
+
+        /* ===============================
+           BLOG CARD
+        =============================== */
+        .blog-card {
+            background: #1e293b;
+            border-radius: 22px;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--s-primary-color);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 22px;
+        }
+
+        .blog-tag {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 30px;
+            background: var(--s-secondry-bg-color);
+            color: var(--s-primary-color);
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .blog-title {
+            font-size: 22px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .blog-description {
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 22px;
+            font-size: 15px;
+        }
+
+        .blog-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+        }
+
+        .author-info h4 {
+            font-size: 14px;
+        }
+
+        .author-info p {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .read-btn {
+            text-decoration: none;
+            background: var(--s-primary-color);
+            color: #0f172a;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .read-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* ===============================
+           EMPTY STATE
+        =============================== */
+        .empty-state {
+            text-align: center;
+            margin-top: 40px;
+            color: #94a3b8;
+            display: none;
+        }
+
+        /* ===============================
+           RESPONSIVE
+        =============================== */
+        @media(max-width: 768px) {
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <!-- ===============================
+         HEADER
+    ================================ -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">BlogSpace</div>
+
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Blogs</a>
+                <a href="#">Categories</a>
+                <a href="#">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ===============================
+         HERO SECTION
+    ================================ -->
+    <section class="hero">
+        <h1>Modern Blog UI</h1>
+
+        <p>
+            Dynamic blog posts rendered using JavaScript data arrays.
+        </p>
+
+        <!-- Search -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search blogs...">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===============================
+         BLOG SECTION
+    ================================ -->
+    <section class="blog-section">
+
+        <!-- Blog Container -->
+        <div class="blog-grid" id="blogGrid"></div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            No blogs found.
+        </div>
+
+    </section>
+
+    <script>
+        /* ===============================
+           BLOG DATA
+        =============================== */
+        const blogs = [
+            {
+                title: "Modern JavaScript Tips for Beginners",
+                category: "JavaScript",
+                description: "Learn modern JavaScript concepts and improve your frontend development workflow efficiently.",
+                image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+                author: "Sadique Ansari",
+                date: "May 9, 2026"
+            },
+
+            {
+                title: "Create Responsive Layouts Easily",
+                category: "CSS",
+                description: "Master Flexbox and CSS Grid to build fully responsive modern website layouts.",
+                image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+                author: "Alex Carter",
+                date: "May 7, 2026"
+            },
+
+            {
+                title: "UI Design Principles Every Developer Should Know",
+                category: "UI/UX",
+                description: "Understand spacing, typography, colors and hierarchy to improve your UI designs.",
+                image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb",
+                author: "Sarah Lee",
+                date: "May 4, 2026"
+            },
+
+            {
+                title: "Build Real Projects to Learn Faster",
+                category: "Frontend",
+                description: "Why project-based learning is one of the best ways to become interview-ready.",
+                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+                author: "John Smith",
+                date: "May 1, 2026"
+            }
+        ];
+
+        /* ===============================
+           SELECT ELEMENTS
+        =============================== */
+        const blogGrid = document.getElementById("blogGrid");
+        const searchInput = document.getElementById("searchInput");
+        const emptyState = document.getElementById("emptyState");
+
+        /* ===============================
+           RENDER BLOGS
+        =============================== */
+        function renderBlogs(items) {
+
+            blogGrid.innerHTML = "";
+
+            if (items.length === 0) {
+                emptyState.style.display = "block";
+                return;
+            }
+
+            emptyState.style.display = "none";
+
+            items.forEach(blog => {
+
+                const card = document.createElement("div");
+                card.classList.add("blog-card");
+
+                card.innerHTML = `
+                    <img src="${blog.image}" class="blog-image">
+
+                    <div class="blog-content">
+
+                        <span class="blog-tag">
+                            ${blog.category}
+                        </span>
+
+                        <h2 class="blog-title">
+                            ${blog.title}
+                        </h2>
+
+                        <p class="blog-description">
+                            ${blog.description}
+                        </p>
+
+                        <div class="blog-footer">
+
+                            <div class="author">
+                                <img src="https://i.pravatar.cc/100">
+
+                                <div class="author-info">
+                                    <h4>${blog.author}</h4>
+                                    <p>${blog.date}</p>
+                                </div>
+                            </div>
+
+                            <a href="#" class="read-btn">
+                                Read More
+                            </a>
+
+                        </div>
+
+                    </div>
+                `;
+
+                blogGrid.appendChild(card);
+            });
+        }
+
+        /* ===============================
+           SEARCH FUNCTIONALITY
+        =============================== */
+        searchInput.addEventListener("input", function () {
+
+            const value = this.value.toLowerCase();
+
+            const filteredBlogs = blogs.filter(blog =>
+                blog.title.toLowerCase().includes(value) ||
+                blog.category.toLowerCase().includes(value)
+            );
+
+            renderBlogs(filteredBlogs);
+        });
+
+        /* ===============================
+           INITIAL RENDER
+        =============================== */
+        renderBlogs(blogs);
+    </script>
+
 </body>
+
 </html>
