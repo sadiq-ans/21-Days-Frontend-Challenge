@@ -1,11 +1,712 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>StreamX Dashboard</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* style.css */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--s-dark-color);
+            color: white;
+            display: flex;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: var(--s-primary-bg-color);
+            padding: 30px 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--s-primary-color);
+            margin-bottom: 40px;
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #b3b3b3;
+            padding: 14px 16px;
+            border-radius: 12px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: var(--s-primary-color);
+            color: white;
+        }
+
+        /* Main */
+
+        .main {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 25px;
+        }
+
+        /* Navbar */
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .left-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #menuBtn {
+            display: none;
+            background: var(--s-primary-bg-color);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .search-box {
+            background: var(--s-primary-bg-color);
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 320px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            width: 100%;
+        }
+
+        .search-box i {
+            color: #777;
+        }
+
+        .right-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-nav img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+        .watchlist-count {
+            background: var(--s-primary-bg-color);
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Hero */
+
+        .hero {
+            height: 420px;
+            border-radius: 24px;
+            background:
+                linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3)),
+                url("https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/7206/1778324787206-i");
+            background-size: cover;
+            background-position: 50% 20%;
+            display: flex;
+            align-items: center;
+            padding: 50px;
+            margin-bottom: 35px;
+        }
+
+        .hero-content {
+            max-width: 550px;
+        }
+
+        .tag {
+            background: var(--s-primary-color);
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+
+        .hero h1 {
+            font-size: 58px;
+            margin: 20px 0;
+        }
+
+        .hero p {
+            color: #d0d0d0;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .hero-buttons button {
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .play-btn {
+            background: var(--s-primary-color);
+            color: white;
+        }
+
+        .list-btn {
+            background: var(--s-primary-bg-color);
+            color: white;
+        }
+
+        .hero-buttons button:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Filters */
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--s-primary-bg-color);
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--s-primary-color);
+        }
+
+        /* Movies */
+
+        .movies-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .movie-card {
+            background: var(--s-primary-bg-color);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 16px;
+        }
+
+        .movie-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .add-btn {
+            width: 100%;
+            border: none;
+            padding: 12px;
+            background: var(--s-primary-color);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Overlay */
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 900;
+        }
+
+        /* Responsive */
+
+        @media(max-width: 992px) {
+
+            .sidebar {
+                left: -100%;
+            }
+
+            .sidebar.show {
+                left: 0;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            #menuBtn {
+                display: block;
+            }
+
+            .overlay.show {
+                display: block;
+            }
+
+        }
+
+        @media(max-width: 768px) {
+
+            .hero {
+                height: auto;
+                padding: 30px;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .search-box {
+                width: 220px;
+            }
+
+        }
+
+        @media(max-width: 576px) {
+
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+                align-items: stretch;
+            }
+
+            .left-nav {
+                width: 100%;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <span>StreamX</span>
+        </div>
+
+        <nav>
+            <a href="#" class="active">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-fire"></i>
+                Trending
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-bookmark"></i>
+                Watchlist
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-gear"></i>
+                Settings
+            </a>
+        </nav>
+
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Navbar -->
+        <header class="navbar">
+
+            <div class="left-nav">
+                <button id="menuBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Search movies...">
+                </div>
+            </div>
+
+            <div class="right-nav">
+
+                <div class="watchlist-count">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span id="watchlistCount">0</span>
+                </div>
+
+                <img src="https://i.pravatar.cc/100" alt="user">
+
+            </div>
+
+        </header>
+
+        <!-- Hero -->
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="tag">Cricket</span>
+
+                <h1>TATA IPL 2026</h1>
+
+                <p>
+                    Watch the live stream of the TATA IPL 2026 match between Chennai Super Kings and Lucknow Super
+                    Giants
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="play-btn">
+                        <i class="fa-solid fa-play"></i>
+                        Watch Now
+                    </button>
+
+                    <button class="list-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        My List
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Filter Buttons -->
+        <section class="filters">
+
+            <button class="filter-btn active" data-category="All">All</button>
+            <button class="filter-btn" data-category="Action">Action</button>
+            <button class="filter-btn" data-category="Biopic">Biopic</button>
+            <button class="filter-btn" data-category="Drama">Drama</button>
+
+        </section>
+
+        <!-- Movies -->
+        <section class="movies-section">
+
+            <h2>Popular Movies</h2>
+
+            <div class="movies-grid" id="moviesGrid"></div>
+
+        </section>
+
+    </main>
+
+    <script>
+        // script.js
+
+        const movies = [
+            {
+                id: 1,
+                title: "Liger",
+                category: "Action",
+                rating: "2.6",
+                image: "https://images.news18.com/ibnlive/uploads/2021/09/whatsapp-image-2021-09-27-at-2.30.12-pm-16327332753x2.jpeg"
+            },
+
+            {
+                id: 2,
+                title: "Ask Me What You Want",
+                category: "Drama",
+                rating: "9.0",
+                image: "https://xstreamcp-assets-msp.streamready.in/assets/HOTSTAR_DTH/MOVIE/690de3debd29c33a8a09963b/images/LANDSCAPE_169/1760521599979-h"
+            },
+
+            {
+                id: 3,
+                title: "Kabir Singh",
+                category: "Drama",
+                rating: "8.1",
+                image: "https://i.ytimg.com/vi/RiANSSgCuJk/maxresdefault.jpg"
+            },
+
+            {
+                id: 4,
+                title: "Anaconda Cursed Jungle",
+                category: "Action",
+                rating: "8.9",
+                image: "https://m.media-amazon.com/images/S/pv-target-images/732a7ed65c65df4bae53592ba8e13d9f0f196026bfd7d5fafa2692652d538a57.jpg"
+            },
+
+            {
+                id: 5,
+                title: "Match Fixing",
+                category: "Drama",
+                rating: "7.9",
+                image: "https://img10.hotstar.com/image/upload/f_auto,q_auto/sources/r1/cms/prod/9695/1776005489695-i"
+            },
+
+            {
+                id: 6,
+                title: "Brahmastra",
+                category: "Action",
+                rating: "8.3",
+                image: "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/e1d92e6f-382a-4025-b8f7-08a7c3cd8930/compose?aspectRatio=1.78&format=webp&width=1200"
+            }
+        ];
+
+        const moviesGrid = document.getElementById("moviesGrid");
+        const searchInput = document.getElementById("searchInput");
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        const watchlistCount = document.getElementById("watchlistCount");
+
+        const sidebar = document.getElementById("sidebar");
+        const menuBtn = document.getElementById("menuBtn");
+        const overlay = document.getElementById("overlay");
+
+        let watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
+        let currentCategory = "All";
+
+        /* Render Movies */
+
+        function renderMovies(data) {
+
+            moviesGrid.innerHTML = "";
+
+            if (data.length === 0) {
+                moviesGrid.innerHTML = `
+            <p>No movies found.</p>
+        `;
+                return;
+            }
+
+            data.forEach(movie => {
+
+                moviesGrid.innerHTML += `
+        
+            <div class="movie-card">
+
+                <img src="${movie.image}" alt="${movie.title}">
+
+                <div class="movie-info">
+
+                    <h3>${movie.title}</h3>
+
+                    <div class="movie-meta">
+                        <span>${movie.category}</span>
+                        <span>⭐ ${movie.rating}</span>
+                    </div>
+
+                    <button class="add-btn" onclick="addToWatchlist(${movie.id})">
+                        + Watchlist
+                    </button>
+
+                </div>
+
+            </div>
+        
+        `;
+            });
+
+        }
+
+        /* Filter Logic */
+
+        function filterMovies() {
+
+            const searchValue = searchInput.value.toLowerCase();
+
+            let filtered = movies.filter(movie => {
+
+                const matchCategory =
+                    currentCategory === "All" ||
+                    movie.category === currentCategory;
+
+                const matchSearch =
+                    movie.title.toLowerCase().includes(searchValue);
+
+                return matchCategory && matchSearch;
+
+            });
+
+            renderMovies(filtered);
+
+        }
+
+        /* Category Buttons */
+
+        filterButtons.forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                filterButtons.forEach(btn =>
+                    btn.classList.remove("active")
+                );
+
+                button.classList.add("active");
+
+                currentCategory = button.dataset.category;
+
+                filterMovies();
+
+            });
+
+        });
+
+        /* Search */
+
+        searchInput.addEventListener("input", filterMovies);
+
+        /* Watchlist */
+
+        function addToWatchlist(id) {
+
+            const selectedMovie = movies.find(movie => movie.id === id);
+
+            const alreadyExists = watchlist.find(item => item.id === id);
+
+            if (alreadyExists) {
+                alert("Movie already in watchlist!");
+                return;
+            }
+
+            watchlist.push(selectedMovie);
+
+            localStorage.setItem(
+                "watchlist",
+                JSON.stringify(watchlist)
+            );
+
+            updateWatchlistCount();
+
+        }
+
+        function updateWatchlistCount() {
+            watchlistCount.innerText = watchlist.length;
+        }
+
+        /* Mobile Menu */
+
+        menuBtn.addEventListener("click", () => {
+
+            sidebar.classList.toggle("show");
+            overlay.classList.toggle("show");
+
+        });
+
+        overlay.addEventListener("click", () => {
+
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+
+        });
+
+        /* Initial */
+
+        renderMovies(movies);
+        updateWatchlistCount();
+    </script>
+
 </body>
+
 </html>
